@@ -1,6 +1,10 @@
 package com.example.online_farm.Entity;
 
+
+
 import jakarta.persistence.*;
+
+
 
 @Entity
 @Table(name="category")
@@ -10,14 +14,15 @@ public class Category {
     @Column(name = "id")
     private int id;
     @Column(name = "name")
-    private String Name;
-
-    public Category() {
-    }
+    private String name;
 
     public Category(int id, String name) {
         this.id = id;
-        Name = name;
+        this.name = name;
+    }
+
+    public Category() {
+
     }
 
     public int getId() {
@@ -29,10 +34,10 @@ public class Category {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 }

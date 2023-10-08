@@ -1,7 +1,11 @@
 package com.example.online_farm.DTO;
 
+import jakarta.validation.constraints.NotEmpty;
+
+
 public class CategoryDTO {
     private String _id;
+    @NotEmpty(message = "Tên không được để trống")
     private String name;
 
     public String get_id() {

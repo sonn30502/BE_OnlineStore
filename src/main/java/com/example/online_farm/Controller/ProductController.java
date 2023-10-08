@@ -1,10 +1,12 @@
 package com.example.online_farm.Controller;
 
 import com.example.online_farm.DTO.ProductsLimit;
+import com.example.online_farm.Entity.Product;
 import com.example.online_farm.Service.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 public class ProductController {
@@ -19,4 +21,37 @@ public class ProductController {
                                      @RequestParam(defaultValue = "30") int limit) {
         return productService.getAllProducts(page, limit);
     }
+
+//     lấy sản phẩm theo id
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable int id) {
+        Product product = this.productService.getProductById(id);
+        if (product != null) {
+            return ResponseEntity.ok(product);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+//    @GetMapping("/products/{id}")
+//    public Product getProductById(@PathVariable int id) {
+//        return productService.getProductById(id);
+//    }
+
+    // xóa sản phẩm theo id
+    @DeleteMapping("/delete/product/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable int id) {
+        // Kiểm tra xem sản phẩm có liên quan đến hình ảnh không
+        boolean hasImages = productService.hasImages(id);
+
+        if (!hasImages) {
+            // Nếu không có hình ảnh liên quan, thực hiện xóa sản phẩm
+            productService.deleteById(id);
+            return ResponseEntity.ok("Xóa sản phẩm thành công.");
+        } else {
+            // Nếu có hình ảnh liên quan, trả về thông báo lỗi
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không thể xóa sản phẩm vì có hình ảnh liên quan.");
+        }
+    }
+
 }

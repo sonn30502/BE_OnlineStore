@@ -1,5 +1,6 @@
 package com.example.online_farm.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class Product {
     private Date updatedAt;
     @Column(name="discount")
     private int discount;
+    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Images> images;
 

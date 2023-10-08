@@ -31,7 +31,6 @@ public class CartItemController {
             cartItem.setQuantity(cartItemRequest.getBuyCount());
             cartItem.setCardId(cartItemRequest.getCartId());
 
-            // Lưu đối tượng vào cơ sở dữ liệu sử dụng JpaRepository
             cartItemRepository.save(cartItem);
 
             // Trả về thông báo "thêm thành công" và mã trạng thái 200 OK

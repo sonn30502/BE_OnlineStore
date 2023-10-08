@@ -1,5 +1,7 @@
 package com.example.online_farm.DTO;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 import java.util.List;
 
@@ -7,7 +9,7 @@ public class ProductDTO {
     private int _id;
     private List<String> images;
     private int price;
-    private double rating;
+    private int rating;
     private int price_before_discount;
     private int quantity;
     private int sold;
@@ -22,6 +24,9 @@ public class ProductDTO {
     // Getter và Setter cho các thuộc tính
 
 
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
     public List<String> getImages() {
         return images;
@@ -39,13 +44,10 @@ public class ProductDTO {
         this.price = price;
     }
 
-    public double getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
 
     public int getPrice_before_discount() {
         return price_before_discount;
@@ -111,14 +113,6 @@ public class ProductDTO {
         this.category = category;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -133,5 +127,21 @@ public class ProductDTO {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+//    public MultipartFile getImageFile() {
+//        return imageFile;
+//    }
+//
+//    public void setImageFile(MultipartFile imageFile) {
+//        this.imageFile = imageFile;
+//    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

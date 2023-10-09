@@ -65,8 +65,13 @@ public class Product {
         this.images = images;
     }
 
-
-
+    public void addImages(Images tempImages){
+        if(images == null){
+            images = new ArrayList<>();
+        }
+        images.add(tempImages);
+        tempImages.setProduct(this);
+    }
 
     public Product(int id) {
         id = id;
@@ -188,14 +193,5 @@ public class Product {
         this.rating = rating;
     }
 
-    public void setImages(List<Images> images) {
-        this.images = images;
-    }
-    public void addImages(Images tempImages){
-        if(images == null){
-            images = new ArrayList<>();
-        }
-        images.add(tempImages);
-        tempImages.setProduct(this);
-    }
+
 }

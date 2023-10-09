@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class UserInfoUserDetails implements UserDetails {
 
 
-    private String name;
+    private String email;
     private String password;
     private User user;
     private String sdt;
@@ -23,7 +23,7 @@ public class UserInfoUserDetails implements UserDetails {
     private List<GrantedAuthority> authorities;
 
     public UserInfoUserDetails(User userInfo) {
-        name=userInfo.getEmail();
+        email=userInfo.getEmail();
         password=userInfo.getPassWord();
         authorities = userInfo.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
@@ -62,7 +62,7 @@ public class UserInfoUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override

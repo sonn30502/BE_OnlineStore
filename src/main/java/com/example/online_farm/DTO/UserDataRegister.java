@@ -2,6 +2,7 @@ package com.example.online_farm.DTO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class UserDataRegister {
     private List<String> roles;
@@ -9,6 +10,10 @@ public class UserDataRegister {
     private String email;
     private Date createdAt;
     private Date updatedAt;
+
+    public UserDataRegister() {
+    }
+
     public int get_id() {
         return _id;
     }

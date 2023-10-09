@@ -1,6 +1,7 @@
 package com.example.online_farm.Controller;
 
 import com.example.online_farm.Config.UserInfoUserDetails;
+import com.example.online_farm.Config.UserInfoUserDetailsService;
 import com.example.online_farm.DTO.*;
 import com.example.online_farm.Entity.RefreshToken;
 import com.example.online_farm.Entity.Role;
@@ -28,9 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -58,19 +57,70 @@ public class UserController {
     }
 
 
+//    @PostMapping("/register")
+//    @CrossOrigin
+//    public ResponseEntity<AuthRegister> addUser(@RequestBody @Valid AuthRequest user) {
+//        try {
+//            if (userRepository.existsByEmail(user.getEmail())) {
+//                throw new EmailAlreadyExistsException("Email already exists");
+//            }
+//            User newUser =  userSevice.addUser(user);
+//
+//            // Call the addUser method of your service to save the new user
+//
+//
+//// Lưu newUser vào CSDL bằng service.addUser(newUser) hoặc bất kỳ phương thức nào bạn sử dụng để lưu người dùng mới.
+//
+//            // Tạo một đối tượng UserDetails
+//            UserDetails userDetails = new UserInfoUserDetails(newUser);
+//
+//            // Tạo token cho người dùng mới đăng ký
+//            String token = jwtService.generateToken(newUser.getEmail());
+//
+//            // Xây dựng AuthRegister
+//            AuthRegister authResponse = new AuthRegister();
+//            authResponse.setMessage("Đăng ký thành công");
+//
+//            UserRegister userData = new UserRegister();
+//            userData.setAccess_token("Bearer " + token);
+//            UserDataRegister userDataRegister = new UserDataRegister();
+//            // Lấy thời gian hiện tại và chuyển đổi sang java.util.Date
+//            userDataRegister.setCreatedAt(newUser.getCreatedAt());
+//            userDataRegister.setUpdatedAt(newUser.getUpdatedAt());
+//            userDataRegister.setEmail(newUser.getEmail());
+//            userDataRegister.set_id(newUser.getId());
+//
+//            List<String> roleNames = newUser.getRoles().stream()
+//                    .map(Role::getName)
+//                    .collect(Collectors.toList());
+//            userDataRegister.setRoles(roleNames);
+//            userData.setUser(userDataRegister);
+//
+//            authResponse.setData(userData);
+//            return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
+//        } catch (EmailAlreadyExistsException e) {
+//            AuthRegister authResponse = new AuthRegister();
+//            authResponse.setMessage("Email already exists");
+//            return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+//        } catch (Exception e) {
+//            String errorMessage = e.getMessage();
+//            AuthRegister errorResponse = new AuthRegister();
+//            errorResponse.setMessage(errorMessage); // Set an appropriate error message here
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+//        }
+//    }
+
     @PostMapping("/register")
     @CrossOrigin
     public ResponseEntity<AuthRegister> addUser(@RequestBody @Valid AuthRequest user) {
         try {
-            if (userRepository.existsByEmail(user.getUsername())) {
+            // Kiểm tra xem email đã tồn tại trong hệ thống chưa
+            if (userRepository.existsByEmail(user.getEmail())) {
                 throw new EmailAlreadyExistsException("Email already exists");
             }
-            User newUser =  userSevice.addUser(user);
 
-            // Call the addUser method of your service to save the new user
-
-
-// Lưu newUser vào CSDL bằng service.addUser(newUser) hoặc bất kỳ phương thức nào bạn sử dụng để lưu người dùng mới.
+            // Tạo một đối tượng User từ dữ liệu trong AuthRequest
+            User newUser = userSevice.addUser(user);
 
             // Tạo một đối tượng UserDetails
             UserDetails userDetails = new UserInfoUserDetails(newUser);
@@ -84,6 +134,7 @@ public class UserController {
 
             UserRegister userData = new UserRegister();
             userData.setAccess_token("Bearer " + token);
+
             UserDataRegister userDataRegister = new UserDataRegister();
             // Lấy thời gian hiện tại và chuyển đổi sang java.util.Date
             userDataRegister.setCreatedAt(newUser.getCreatedAt());
@@ -101,7 +152,7 @@ public class UserController {
             return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
         } catch (EmailAlreadyExistsException e) {
             AuthRegister authResponse = new AuthRegister();
-            authResponse.setMessage("Email already exists");
+            authResponse.setMessage("Email đã tồn tại");
             return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
@@ -110,6 +161,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
 
     @GetMapping("/me")
     @CrossOrigin
@@ -141,6 +193,7 @@ public class UserController {
         allMessiage.setUserAllDTOS(userDTOs);
         return new ResponseEntity<>(allMessiage, HttpStatus.OK);
     }
+
     @PutMapping("/users/{id}")
     @CrossOrigin
     public ResponseEntity<User> updateUser(@PathVariable int id, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
@@ -188,14 +241,14 @@ public class UserController {
         // Trả về phản hồi 200 OK với thông tin người dùng đã được cập nhật
         return ResponseEntity.ok(updatedUser);
     }
-
+    gi
     @PostMapping("/login")
     @CrossOrigin
-    public AuthResponse authenticateAndGetToken(@RequestBody @Valid AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> authenticateAndGetToken(@RequestBody @Valid AuthRequest authRequest) {
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
             if (authentication.isAuthenticated()) {
-                String token = jwtService.generateToken(authRequest.getUsername());
+                String token = jwtService.generateToken(authRequest.getEmail());
                 Object principal = authentication.getPrincipal();
                 UserDetails userDetails = (UserDetails) principal;
                 Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
@@ -217,7 +270,7 @@ public class UserController {
                 userData.setUser(userAllDTO);
 
                 // Tạo refreshToken
-                RefreshToken refreshToken = refreshTokenService.createRefreshToken(authRequest.getUsername());
+                RefreshToken refreshToken = refreshTokenService.createRefreshToken(authRequest.getEmail());
 
                 // Tạo và trả về AuthResponse chứa cả refreshToken
                 AuthResponse authResponse = new AuthResponse();
@@ -225,14 +278,23 @@ public class UserController {
                 authResponse.setData(userData);
                 authResponse.setRefreshToken(refreshToken.getToken());
 
-                return authResponse;
+                return ResponseEntity.ok(authResponse);
             } else {
-                throw new UsernameNotFoundException("Tài khoản hoặc mật khẩu không chính xác");
+                // Nếu tài khoản hoặc mật khẩu không chính xác, trả về phản hồi lỗi
+                AuthResponse errorResponse = new AuthResponse();
+                errorResponse.setMessage("Tài khoản hoặc mật khẩu không chính xác");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
             }
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Tài khoản hoặc mật khẩu không chính xác", e);
+            // Xử lý ngoại lệ xảy ra khi không thể xác thực
+            AuthResponse errorResponse = new AuthResponse();
+            errorResponse.setMessage("Tài khoản hoặc mật khẩu không chính xác");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
+
+
+
     @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
     public ResponseEntity<String> handleAuthenticationException(Exception e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tài khoản hoặc mật khẩu không chính xác");

@@ -24,7 +24,7 @@ public class UserSevice {
 
     public User addUser(AuthRequest userInfo) {
         User user = new User();
-        user.setEmail(userInfo.getUsername());
+        user.setEmail(userInfo.getEmail());
         user.setPassWord(passwordEncoder.encode(userInfo.getPassword()));
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());

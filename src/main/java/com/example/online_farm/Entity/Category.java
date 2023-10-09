@@ -2,8 +2,10 @@ package com.example.online_farm.Entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.List;
 
 
 @Entity
@@ -15,6 +17,8 @@ public class Category {
     private int id;
     @Column(name = "name")
     private String name;
+
+
 
     public Category(int id, String name) {
         this.id = id;

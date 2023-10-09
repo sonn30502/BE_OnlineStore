@@ -6,8 +6,20 @@ import java.util.List;
 public class UserRegister {
     private String access_token;
     public String expires = "30P";
+    private UserDataRegister user;
 
-    UserDataRegister user;
+    private String data;
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public UserRegister() {
+    }
 
     public UserDataRegister getUser() {
         return user;
@@ -17,9 +29,9 @@ public class UserRegister {
         this.user = user;
     }
 
-    public String getExpires() {
-        return expires;
-    }
+//    public String getExpires() {
+//        return expires;
+//    }
 
     public String getAccess_token() {
         return access_token;

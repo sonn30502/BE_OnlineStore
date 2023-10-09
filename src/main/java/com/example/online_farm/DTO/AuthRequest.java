@@ -18,18 +18,18 @@ public class AuthRequest {
     @NotBlank(message = "Email không được để trống")
     @Size(min = 5, max = 160, message = "Email phải từ 5 đến 160 ký tự")
     @Email(message = "Email không hợp lệ")
-    private String username ;
+    private String email ;
 
     @NotBlank(message = "Mật khẩu không được để trống")
     @Size(min = 6, max = 160, message = "Mật khẩu phải từ 6 đến 160 ký tự")
     private String password;
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

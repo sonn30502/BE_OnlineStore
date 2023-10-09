@@ -7,6 +7,9 @@ public class AuthRegister {
     private String message;
     private UserRegister data;
 
+    public AuthRegister() {
+    }
+
     public String getMessage() {
         return message;
     }
@@ -22,4 +25,5 @@ public class AuthRegister {
     public void setData(UserRegister data) {
         this.data = data;
     }
+
 }

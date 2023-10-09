@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -56,7 +57,11 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/register")
+
+    @PostMapping(path = "/register",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    @CrossOrigin
     public ResponseEntity<AuthRegister> addUser(@RequestBody @Valid AuthRequest user) {
         try {
             if (userRepository.existsByEmail(user.getUsername())) {
@@ -109,6 +114,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @CrossOrigin
     public ResponseEntity<UserAllMessiage> getAllUsers() {
         List<User> users = userRepository.findAll();
         // Chuyển đổi từ User sang UserDTO và loại bỏ trường password
@@ -138,6 +144,7 @@ public class UserController {
         return new ResponseEntity<>(allMessiage, HttpStatus.OK);
     }
     @PutMapping("/users/{id}")
+    @CrossOrigin
     public ResponseEntity<User> updateUser(@PathVariable int id, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         User existingUser = userRepository.findById(id).orElse(null);
 
@@ -185,6 +192,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @CrossOrigin
     public AuthResponse authenticateAndGetToken(@RequestBody @Valid AuthRequest authRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));

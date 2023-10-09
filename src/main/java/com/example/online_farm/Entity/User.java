@@ -11,7 +11,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name= "id")
-    private int Id;
+    private int id;
     @Column(name = "full_name")
     private String fullName;
     @Column(name= "email")
@@ -46,7 +46,7 @@ public class User {
     }
 
     public User(int id, String fullName, String email, String address, String password, String sdt, String avatar, Date createdAt, Date updatedAt, Date date_of_birth) {
-        Id = id;
+        id = id;
         this.fullName = fullName;
         this.email = email;
         this.address = address;
@@ -83,11 +83,11 @@ public class User {
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        id = id;
     }
 
     public String getFullName() {

@@ -58,9 +58,7 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/register",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping("/register")
     @CrossOrigin
     public ResponseEntity<AuthRegister> addUser(@RequestBody @Valid AuthRequest user) {
         try {

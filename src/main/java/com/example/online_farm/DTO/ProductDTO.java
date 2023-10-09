@@ -9,7 +9,7 @@ public class ProductDTO {
     private int _id;
     private List<String> images;
     private int price;
-    private int rating;
+    private double rating;
     private int price_before_discount;
     private int quantity;
     private int sold;
@@ -24,8 +24,12 @@ public class ProductDTO {
     // Getter và Setter cho các thuộc tính
 
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
     public List<String> getImages() {
@@ -44,10 +48,13 @@ public class ProductDTO {
         this.price = price;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
     public int getPrice_before_discount() {
         return price_before_discount;
@@ -97,20 +104,20 @@ public class ProductDTO {
         this.description = description;
     }
 
-    public int get_id() {
-        return _id;
-    }
-
-    public void set_id(int _id) {
-        this._id = _id;
-    }
-
     public int getCategory() {
         return category;
     }
 
     public void setCategory(int category) {
         this.category = category;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Date getCreatedAt() {
@@ -127,21 +134,5 @@ public class ProductDTO {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-//    public MultipartFile getImageFile() {
-//        return imageFile;
-//    }
-//
-//    public void setImageFile(MultipartFile imageFile) {
-//        this.imageFile = imageFile;
-//    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 }

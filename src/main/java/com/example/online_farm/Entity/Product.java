@@ -13,7 +13,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    private int Id;
+    private int id;
     @Column(name="price")
     private int price;
     @Column(name="price_before_discount")
@@ -21,7 +21,7 @@ public class Product {
     @Column(name="quantity")
     private int quantity;
     @Column(name="rating")
-    private int rating;
+    private double rating;
     @Column(name="sold")
     private int sold;
     @Column(name="view")
@@ -47,8 +47,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, int price, int priceBeforeDiscount, int quantity, int rating, int sold, int view, String title, String description, int categoryId, String image, Date createdAt, Date updatedAt, int discount, List<Images> images) {
-        Id = id;
+    public Product(int id, int price, int priceBeforeDiscount, int quantity, double rating, int sold, int view, String title, String description, int categoryId, String image, Date createdAt, Date updatedAt, int discount, List<Images> images) {
+        id = id;
         this.price = price;
         this.priceBeforeDiscount = priceBeforeDiscount;
         this.quantity = quantity;
@@ -65,16 +65,19 @@ public class Product {
         this.images = images;
     }
 
+
+
+
     public Product(int id) {
-        Id = id;
+        id = id;
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        id = id;
     }
 
     public int getPrice() {
@@ -99,14 +102,6 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
     }
 
     public int getSold() {
@@ -183,6 +178,14 @@ public class Product {
 
     public List<Images> getImages() {
         return images;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public void setImages(List<Images> images) {

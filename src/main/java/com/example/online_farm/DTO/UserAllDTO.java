@@ -7,14 +7,14 @@ import java.util.List;
 
 public class UserAllDTO {
     private int Id;
-    private List<String> roleList;
+    private List<String> roles;
     private String email;
     private String name;
     private String address;
     private String phone;
     private Date createdAt;
     private Date updateAt;
-    private Date birthDay;
+    private Date date_of_birth;
 
     public int getId() {
         return Id;
@@ -24,12 +24,21 @@ public class UserAllDTO {
         Id = id;
     }
 
-    public List<String> getRoleList() {
-        return roleList;
+//    public List<String> getRoleList() {
+//        return roleList;
+//    }
+//
+//    public void setRoleList(List<String> roleList) {
+//        this.roleList = roleList;
+//    }
+
+
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRoleList(List<String> roleList) {
-        this.roleList = roleList;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     public String getEmail() {
@@ -80,11 +89,11 @@ public class UserAllDTO {
         this.updateAt = updateAt;
     }
 
-    public Date getBirthDay() {
-        return birthDay;
+    public Date getDate_of_birth() {
+        return date_of_birth;
     }
 
-    public void setBirthDay(Date birthDay) {
-        this.birthDay = birthDay;
+    public void setDate_of_birth(Date date_of_birth) {
+        this.date_of_birth = date_of_birth;
     }
 }

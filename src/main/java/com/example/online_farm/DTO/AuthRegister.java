@@ -5,7 +5,7 @@ package com.example.online_farm.DTO;
 public class AuthRegister {
 
     private String message;
-    private UserRegister userRegister;
+    private UserRegister data;
 
     public String getMessage() {
         return message;
@@ -15,11 +15,11 @@ public class AuthRegister {
         this.message = message;
     }
 
-    public UserRegister getUserRegister() {
-        return userRegister;
+    public UserRegister getData() {
+        return data;
     }
 
-    public void setUserRegister(UserRegister userRegister) {
-        this.userRegister = userRegister;
+    public void setData(UserRegister data) {
+        this.data = data;
     }
 }

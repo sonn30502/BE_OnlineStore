@@ -80,7 +80,7 @@ public class UserController {
             authResponse.setMessage("Đăng ký thành công");
 
             UserRegister userData = new UserRegister();
-            userData.setAccessToken("Bearer " + token);
+            userData.setAccess_token("Bearer " + token);
             UserDataRegister userDataRegister = new UserDataRegister();
             // Lấy thời gian hiện tại và chuyển đổi sang java.util.Date
             userDataRegister.setCreatedAt(newUser.getCreatedAt());
@@ -92,9 +92,9 @@ public class UserController {
                     .map(Role::getName)
                     .collect(Collectors.toList());
             userDataRegister.setRoles(roleNames);
-            userData.setUserDataRegister(userDataRegister);
+            userData.setUser(userDataRegister);
 
-            authResponse.setUserRegister(userData);
+            authResponse.setData(userData);
             return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
         } catch (EmailAlreadyExistsException e) {
             AuthRegister authResponse = new AuthRegister();
@@ -122,11 +122,11 @@ public class UserController {
                     userDTO.setPhone(user.getSdt());
                     userDTO.setCreatedAt(user.getCreatedAt());
                     userDTO.setUpdateAt(user.getUpdatedAt());
-                    userDTO.setBirthDay(user.getBirthDay());
+                    userDTO.setDate_of_birth(user.getDate_of_birth());
                     List<String> roleNames = user.getRoles().stream()
                             .map(Role::getName) // giả sử Role có phương thức getName() để lấy tên của vai trò
                             .collect(Collectors.toList());
-                    userDTO.setRoleList(roleNames);
+                    userDTO.setRoles(roleNames);
                     // Thêm các trường khác mà bạn muốn trả về
                     return userDTO;
                 })
@@ -154,11 +154,11 @@ public class UserController {
 
         // Chuyển đổi chuỗi ngày tháng thành đối tượng java.util.Date
         // Chuyển đổi chuỗi ngày tháng thành đối tượng java.util.Date
-        if (userUpdateRequest.getBirthDay() != null && !userUpdateRequest.getBirthDay().isEmpty()) {
+        if (userUpdateRequest.getDate_of_birth() != null && !userUpdateRequest.getDate_of_birth().isEmpty()) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             try {
-                Date birthDay = dateFormat.parse(userUpdateRequest.getBirthDay());
-                existingUser.setBirthDay(birthDay);
+                Date birthDay = dateFormat.parse(userUpdateRequest.getDate_of_birth());
+                existingUser.setDate_of_birth(birthDay);
             } catch (ParseException e) {
                 // Xử lý lỗi nếu không thể phân tích cú pháp ngày tháng
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -184,7 +184,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public AuthResponse authenticateAndGetToken(@RequestBody @Valid AuthRequest authRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
@@ -195,23 +195,20 @@ public class UserController {
                 Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
 
                 UserData userData = new UserData();
-                userData.setAccessToken("Bearer " + token);
-                userData.setName(user.get().getFullName());
-                userData.setPhone(user.get().getSdt());
-                userData.setAddress(user.get().getAddress());
-                userData.setEmail(user.get().getEmail());
-                userData.setBirthDay(user.get().getBirthDay());
-                userData.setCreatedAt(user.get().getCreatedAt());
-                userData.setUpdatedAt(user.get().getUpdatedAt());
-                userData.set_id(user.get().getId());
-//                userData.getCreatedAt();
-//                userData.getAddress();
-//                userData.getPhone();
-//                userData.getUpdatedAt();
-                List<String> roleNames = user.get().getRoles().stream()
-                        .map(Role::getName)
-                        .collect(Collectors.toList());
-                userData.setRoles(roleNames);
+                userData.setAccess_token("Bearer " + token);
+
+                UserAllDTO userAllDTO = new UserAllDTO();
+                userAllDTO.setId(user.get().getId());
+                userAllDTO.setRoles(user.get().getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+                userAllDTO.setEmail(user.get().getEmail());
+                userAllDTO.setName(user.get().getFullName());
+                userAllDTO.setDate_of_birth(user.get().getDate_of_birth());
+                userAllDTO.setAddress(user.get().getAddress());
+                userAllDTO.setPhone(user.get().getSdt());
+                userAllDTO.setCreatedAt(user.get().getCreatedAt());
+                userAllDTO.setUpdateAt(user.get().getUpdatedAt());
+
+                userData.setUser(userAllDTO);
 
                 // Tạo refreshToken
                 RefreshToken refreshToken = refreshTokenService.createRefreshToken(authRequest.getUsername());
@@ -243,7 +240,7 @@ public class UserController {
                 .map(userInfo -> {
                     String accessToken = jwtService.generateToken(userInfo.getEmail());
                     return JwtResponse.builder()
-                            .accessToken(accessToken)
+                            .access_token(accessToken)
                             .token(refreshTokenRequest.getToken())
                             .build();
                 }).orElseThrow(() -> new RuntimeException(

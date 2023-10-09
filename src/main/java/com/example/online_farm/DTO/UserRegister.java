@@ -4,30 +4,29 @@ import java.util.Date;
 import java.util.List;
 
 public class UserRegister {
-    private String accessToken;
+    private String access_token;
     public String expires = "30P";
 
-    UserDataRegister userDataRegister;
+    UserDataRegister user;
 
-    public UserDataRegister getUserDataRegister() {
-        return userDataRegister;
+    public UserDataRegister getUser() {
+        return user;
     }
 
-    public void setUserDataRegister(UserDataRegister userDataRegister) {
-        this.userDataRegister = userDataRegister;
+    public void setUser(UserDataRegister user) {
+        this.user = user;
     }
 
     public String getExpires() {
         return expires;
     }
 
-
-
-    public String getAccessToken() {
-        return accessToken;
+    public String getAccess_token() {
+        return access_token;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
     }
+
 }

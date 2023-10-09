@@ -30,8 +30,8 @@ public class User {
     @Column(name="updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @Column(name="birthday")
-    private Date birthDay;
+    @Column(name="date_of_birth")
+    private Date date_of_birth;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -45,7 +45,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String fullName, String email, String address, String password, String sdt, String avatar, Date createdAt, Date updatedAt, Date birthDay) {
+    public User(int id, String fullName, String email, String address, String password, String sdt, String avatar, Date createdAt, Date updatedAt, Date date_of_birth) {
         Id = id;
         this.fullName = fullName;
         this.email = email;
@@ -55,7 +55,7 @@ public class User {
         this.avatar = avatar;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.birthDay = birthDay;
+        this.date_of_birth = date_of_birth;
     }
 
     public Date getCreatedAt() {
@@ -74,12 +74,12 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public Date getBirthDay() {
-        return birthDay;
+    public Date getDate_of_birth() {
+        return date_of_birth;
     }
 
-    public void setBirthDay(Date birthDay) {
-        this.birthDay = birthDay;
+    public void setDate_of_birth(Date date_of_birth) {
+        this.date_of_birth = date_of_birth;
     }
 
     public int getId() {

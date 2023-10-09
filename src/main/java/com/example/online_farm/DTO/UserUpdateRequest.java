@@ -21,7 +21,7 @@ public class UserUpdateRequest {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "MM/dd/yyyy")
-    private String birthDay;
+    private String date_of_birth;
 
     @Size(max = 1000, message = "Không được quá 1000 ký tự")
     private String avatar;
@@ -47,12 +47,16 @@ public class UserUpdateRequest {
         this.address = address;
     }
 
-    public String getBirthDay() {
-        return birthDay;
+    public String getDate_of_birth() {
+        return date_of_birth;
     }
 
-    public void setBirthDay(String birthDay) {
-        this.birthDay = birthDay;
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setDate_of_birth(String date_of_birth) {
+        this.date_of_birth = date_of_birth;
     }
 
     public String getName() {

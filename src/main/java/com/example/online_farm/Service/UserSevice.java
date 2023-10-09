@@ -29,11 +29,11 @@ public class UserSevice {
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
 
-        Role roleUser = roleRepository.findByName("ROLE_USER");
+        Role roleUser = roleRepository.findByName("USER");
 
         if (roleUser == null) {
             // Nếu "ROLE_USER" chưa tồn tại, bạn có thể tạo nó
-            roleUser = new Role("ROLE_USER");
+            roleUser = new Role("USER");
             roleRepository.save(roleUser);
         }
 

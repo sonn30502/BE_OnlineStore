@@ -1,5 +1,7 @@
 package com.example.online_farm.Service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.online_farm.DTO.AuthRequest;
 import com.example.online_farm.Entity.Role;
 import com.example.online_farm.Entity.User;
@@ -8,10 +10,17 @@ import com.example.online_farm.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class UserSevice {
@@ -21,6 +30,8 @@ public class UserSevice {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public User addUser(AuthRequest userInfo) {
         User user = new User();
@@ -43,4 +54,19 @@ public class UserSevice {
 
         return repository.save(user);
     }
+
+    public User uploadProfileImage(User user, MultipartFile file) throws IOException {
+        if (!file.isEmpty()) {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            String imageUrl = uploadResult.get("secure_url").toString();
+            user.setAvatar(imageUrl);
+            return repository.save(user);
+        }
+        return user;
+    }
+
+    public User getUserById(int id) {
+        return repository.findById(id).orElse(null);
+    }
+
 }

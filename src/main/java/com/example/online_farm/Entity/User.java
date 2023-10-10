@@ -2,6 +2,7 @@ package com.example.online_farm.Entity;
 
 import jakarta.persistence.*;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -33,6 +34,9 @@ public class User {
     @Column(name="date_of_birth")
     private Date date_of_birth;
 
+    @Transient
+    MultipartFile file;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
@@ -45,6 +49,7 @@ public class User {
     public User() {
     }
 
+
     public User(int id, String fullName, String email, String address, String password, String sdt, String avatar, Date createdAt, Date updatedAt, Date date_of_birth) {
         id = id;
         this.fullName = fullName;
@@ -56,6 +61,22 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.date_of_birth = date_of_birth;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Date getCreatedAt() {

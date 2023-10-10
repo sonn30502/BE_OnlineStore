@@ -1,7 +1,7 @@
 package com.example.online_farm.Controller;
 
+import com.cloudinary.Cloudinary;
 import com.example.online_farm.Config.UserInfoUserDetails;
-import com.example.online_farm.Config.UserInfoUserDetailsService;
 import com.example.online_farm.DTO.*;
 import com.example.online_farm.Entity.RefreshToken;
 import com.example.online_farm.Entity.Role;
@@ -13,7 +13,6 @@ import com.example.online_farm.Service.RefreshTokenService;
 import com.example.online_farm.Service.UserSevice;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -42,6 +43,8 @@ public class UserController {
     @Autowired
     private UserSevice userSevice;
 
+    @Autowired
+    private Cloudinary cloudinary;
     @Autowired
     private JwtService jwtService;
 
@@ -162,7 +165,6 @@ public class UserController {
         }
     }
 
-
     @GetMapping("/me")
     @CrossOrigin
     public ResponseEntity<UserAllMessiage> getAllUsers() {
@@ -241,7 +243,6 @@ public class UserController {
         // Trả về phản hồi 200 OK với thông tin người dùng đã được cập nhật
         return ResponseEntity.ok(updatedUser);
     }
-    gi
     @PostMapping("/login")
     @CrossOrigin
     public ResponseEntity<AuthResponse> authenticateAndGetToken(@RequestBody @Valid AuthRequest authRequest) {

@@ -1,12 +1,12 @@
 package com.example.online_farm.Controller;
 
-import com.cloudinary.Cloudinary;
 import com.example.online_farm.Config.UserInfoUserDetails;
 import com.example.online_farm.DTO.*;
 import com.example.online_farm.Entity.RefreshToken;
 import com.example.online_farm.Entity.Role;
 import com.example.online_farm.Entity.User;
 import com.example.online_farm.Exception.EmailAlreadyExistsException;
+import com.example.online_farm.Repository.RefreshTokenRepository;
 import com.example.online_farm.Repository.UserRepository;
 import com.example.online_farm.Service.JwtService;
 import com.example.online_farm.Service.RefreshTokenService;
@@ -14,104 +14,44 @@ import com.example.online_farm.Service.UserSevice;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private UserSevice userSevice;
-
-    @Autowired
-    private Cloudinary cloudinary;
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private RefreshTokenService refreshTokenService;
 
     @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+    @Autowired
     private AuthenticationManager authenticationManager;
-
-
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-
-//    @PostMapping("/register")
-//    @CrossOrigin
-//    public ResponseEntity<AuthRegister> addUser(@RequestBody @Valid AuthRequest user) {
-//        try {
-//            if (userRepository.existsByEmail(user.getEmail())) {
-//                throw new EmailAlreadyExistsException("Email already exists");
-//            }
-//            User newUser =  userSevice.addUser(user);
-//
-//            // Call the addUser method of your service to save the new user
-//
-//
-//// Lưu newUser vào CSDL bằng service.addUser(newUser) hoặc bất kỳ phương thức nào bạn sử dụng để lưu người dùng mới.
-//
-//            // Tạo một đối tượng UserDetails
-//            UserDetails userDetails = new UserInfoUserDetails(newUser);
-//
-//            // Tạo token cho người dùng mới đăng ký
-//            String token = jwtService.generateToken(newUser.getEmail());
-//
-//            // Xây dựng AuthRegister
-//            AuthRegister authResponse = new AuthRegister();
-//            authResponse.setMessage("Đăng ký thành công");
-//
-//            UserRegister userData = new UserRegister();
-//            userData.setAccess_token("Bearer " + token);
-//            UserDataRegister userDataRegister = new UserDataRegister();
-//            // Lấy thời gian hiện tại và chuyển đổi sang java.util.Date
-//            userDataRegister.setCreatedAt(newUser.getCreatedAt());
-//            userDataRegister.setUpdatedAt(newUser.getUpdatedAt());
-//            userDataRegister.setEmail(newUser.getEmail());
-//            userDataRegister.set_id(newUser.getId());
-//
-//            List<String> roleNames = newUser.getRoles().stream()
-//                    .map(Role::getName)
-//                    .collect(Collectors.toList());
-//            userDataRegister.setRoles(roleNames);
-//            userData.setUser(userDataRegister);
-//
-//            authResponse.setData(userData);
-//            return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
-//        } catch (EmailAlreadyExistsException e) {
-//            AuthRegister authResponse = new AuthRegister();
-//            authResponse.setMessage("Email already exists");
-//            return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e) {
-//            String errorMessage = e.getMessage();
-//            AuthRegister errorResponse = new AuthRegister();
-//            errorResponse.setMessage(errorMessage); // Set an appropriate error message here
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-//        }
-//    }
 
     @PostMapping("/register")
     @CrossOrigin
@@ -293,8 +233,38 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
+    private boolean isValidRefreshToken(String refreshToken) {
+        // Thực hiện kiểm tra tính hợp lệ của Refresh Token tại đây
+        // Đảm bảo rằng Refresh Token tồn tại trong cơ sở dữ liệu và hợp lệ
 
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenService.findByToken(refreshToken);
+        return refreshTokenOptional.isPresent();
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody RefreshTokenRequest logoutRequest) {
+        String refreshToken = logoutRequest.getRefreshToken();
 
+        // Kiểm tra tính hợp lệ của Refresh Token trước khi xóa
+        if (isValidRefreshToken(refreshToken)) {
+            // Xóa Refresh Token từ cơ sở dữ liệu
+            refreshTokenService.deleteRefreshToken(refreshToken);
+
+            return ResponseEntity.ok("Đăng xuất thành công");
+        } else {
+            return ResponseEntity.badRequest().body("Refresh Token không hợp lệ");
+        }
+    }
+
+    @GetMapping("/refreshToken/findByToken")
+    public ResponseEntity<RefreshToken> findByToken(@RequestParam String token) {
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(token);
+
+        if (refreshTokenOptional.isPresent()) {
+            return ResponseEntity.ok(refreshTokenOptional.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
     public ResponseEntity<String> handleAuthenticationException(Exception e) {
@@ -303,14 +273,14 @@ public class UserController {
 
     @PostMapping("/refreshToken")
     public JwtResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
-        return refreshTokenService.findByToken(refreshTokenRequest.getToken())
+        return refreshTokenService.findByToken(refreshTokenRequest.getRefreshToken())
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(userInfo -> {
                     String accessToken = jwtService.generateToken(userInfo.getEmail());
                     return JwtResponse.builder()
                             .access_token(accessToken)
-                            .token(refreshTokenRequest.getToken())
+                            .token(refreshTokenRequest.getRefreshToken())
                             .build();
                 }).orElseThrow(() -> new RuntimeException(
                         "Refresh token is not in database!"));

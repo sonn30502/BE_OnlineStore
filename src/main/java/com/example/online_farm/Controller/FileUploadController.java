@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("/api")
 public class FileUploadController {
     @Autowired
     private IStorageService storageService;
@@ -22,7 +23,7 @@ public class FileUploadController {
     private UserSevice userSevice;
     @Autowired
     ImagesRepository imagesRepository;
-    @PostMapping("/upload/{productId}")
+    @PostMapping("/uploadsp/{productId}")
     public ResponseEntity<Object> uploadFile(@PathVariable int productId, @RequestParam("file") MultipartFile file) {
         try {
             String generatedFileName = storageService.storeFile(file);
@@ -41,7 +42,7 @@ public class FileUploadController {
         }
     }
 
-    @PostMapping("/upload/{userId}")
+    @PostMapping("/uploaduser/{userId}")
     public ResponseEntity<User> uploadProfileImage(
             @PathVariable int userId,
             @RequestParam("file") MultipartFile file

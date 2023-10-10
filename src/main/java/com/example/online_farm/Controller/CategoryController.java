@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

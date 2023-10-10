@@ -27,9 +27,13 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
+    }
+
+    public void deleteRefreshToken(String token) {
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(token);
+        refreshTokenOptional.ifPresent(refreshToken -> refreshTokenRepository.delete(refreshToken));
     }
 
 

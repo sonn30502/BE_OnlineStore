@@ -241,6 +241,7 @@ public class UserController {
         return refreshTokenOptional.isPresent();
     }
     @PostMapping("/logout")
+    @CrossOrigin
     public ResponseEntity<String> logout(@RequestBody RefreshTokenRequest logoutRequest) {
         String refreshToken = logoutRequest.getRefreshToken();
 
@@ -256,6 +257,7 @@ public class UserController {
     }
 
     @GetMapping("/refreshToken/findByToken")
+    @CrossOrigin
     public ResponseEntity<RefreshToken> findByToken(@RequestParam String token) {
         Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(token);
 
@@ -272,6 +274,7 @@ public class UserController {
     }
 
     @PostMapping("/refreshToken")
+    @CrossOrigin
     public JwtResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         return refreshTokenService.findByToken(refreshTokenRequest.getRefreshToken())
                 .map(refreshTokenService::verifyExpiration)

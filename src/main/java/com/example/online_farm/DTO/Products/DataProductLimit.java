@@ -1,6 +1,6 @@
-package com.example.online_farm.DTO;
+package com.example.online_farm.DTO.Products;
 
-import com.example.online_farm.Entity.Product;
+import com.example.online_farm.DTO.Pagination;
 
 import java.util.List;
 

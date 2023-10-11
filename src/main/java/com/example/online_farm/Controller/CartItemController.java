@@ -24,6 +24,7 @@ public class CartItemController {
     }
 
     @PostMapping("/add-to-cart")
+    @CrossOrigin
     public ResponseEntity<String> addToCart(@RequestBody CardItemId cartItemRequest) {
         try {
             // Chuyển đổi product_id thành productId và buy_count thành quantity
@@ -42,6 +43,7 @@ public class CartItemController {
         }
     }
     @PutMapping("/update-purchase")
+    @CrossOrigin
     public ResponseEntity<String> updateCartItem(@RequestBody CardItemId cartItemRequest) {
         try {
             // Lấy ra cartItem từ cơ sở dữ liệu bằng productId
@@ -68,6 +70,7 @@ public class CartItemController {
         }
     }
     @PostMapping("/buy-products")
+    @CrossOrigin
     public ResponseEntity<String> addMultipleToCart(@RequestBody CardItemIdList requestList) {
         try {
             List<CartItem> cartItems = new ArrayList<>();
@@ -101,6 +104,7 @@ public class CartItemController {
 
 
     @DeleteMapping("/remove-products")
+    @CrossOrigin
     public ResponseEntity<String> removeMultipleFromCart(@RequestBody CardItemIdList requestList) {
         try {
             boolean allItemsRemoved = false;

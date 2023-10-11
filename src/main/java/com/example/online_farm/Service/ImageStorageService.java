@@ -1,6 +1,9 @@
 package com.example.online_farm.Service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,9 @@ import java.util.stream.Stream;
 @Service
 public class ImageStorageService implements IStorageService {
     private final Path storageFolder = Paths.get("uploads");
+
+    @Autowired
+    private Cloudinary cloudinary;
     //constructor
     public ImageStorageService() {
         try {
@@ -68,7 +74,6 @@ public class ImageStorageService implements IStorageService {
             throw new RuntimeException("Failed to store file.", exception);
         }
     }
-
     @Override
     public Stream<Path> loadAll() {
         try {
@@ -81,7 +86,6 @@ public class ImageStorageService implements IStorageService {
         }
 
     }
-
     @Override
     public byte[] readFileContent(String fileName) {
         try {
@@ -103,6 +107,6 @@ public class ImageStorageService implements IStorageService {
 
     @Override
     public void deleteAllFiles() {
-
     }
+
 }

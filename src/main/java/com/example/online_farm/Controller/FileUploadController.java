@@ -1,10 +1,15 @@
 package com.example.online_farm.Controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.online_farm.DTO.ImageDTO;
+import com.example.online_farm.DTO.ImageMessageDTO;
 import com.example.online_farm.Entity.Images;
+import com.example.online_farm.Entity.Product;
 import com.example.online_farm.Entity.User;
 import com.example.online_farm.Repository.ImagesRepository;
 import com.example.online_farm.Service.IStorageService;
+import com.example.online_farm.Service.ProductService;
 import com.example.online_farm.Service.UserSevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -22,27 +28,42 @@ public class FileUploadController {
     @Autowired
     private UserSevice userSevice;
     @Autowired
-    ImagesRepository imagesRepository;
+    private ProductService productService;
+    @Autowired
+    private ImagesRepository imagesRepository;
+    @Autowired
+    private Cloudinary cloudinary;
+
     @PostMapping("/uploadsp/{productId}")
+    @CrossOrigin
     public ResponseEntity<Object> uploadFile(@PathVariable int productId, @RequestParam("file") MultipartFile file) {
+        ImageMessageDTO responseDTO = new ImageMessageDTO();
         try {
-            String generatedFileName = storageService.storeFile(file);
-            // Access other fields from the Images object
+            // Tải lên tệp lên Cloudinary
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            String imageUrl = uploadResult.get("secure_url").toString();
+
+            // Lưu đường dẫn ảnh vào cơ sở dữ liệu hoặc làm bất kỳ việc bạn cần
             Images imageUpLoad = new Images();
             imageUpLoad.setProductId(productId);
-            imageUpLoad.setImageUrl(generatedFileName);
-            // Do whatever you need to do with productId and imageUrl
+            imageUpLoad.setImageUrl(imageUrl);
             imagesRepository.save(imageUpLoad);
-            // Upload the file and get the generated file name
-            // Return a response indicating success
-            return ResponseEntity.status(HttpStatus.OK).body("upload file thành công");
+
+            // Thiết lập thông báo thành công và trả về đường dẫn ảnh
+            responseDTO.setMessage("Upload sản phẩm thành công");
+            responseDTO.setData(imageUrl); // Trả về đường dẫn ảnh đã tải lên
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         } catch (Exception exception) {
-            // Return a response indicating an error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi");
+            // Xử lý lỗi và thiết lập thông báo lỗi
+            responseDTO.setMessage("Lỗi");
+            responseDTO.setData(exception.getMessage()); // Trả về thông tin lỗi cụ thể
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDTO);
         }
     }
 
+
     @PostMapping("/uploaduser/{userId}")
+    @CrossOrigin
     public ResponseEntity<User> uploadProfileImage(
             @PathVariable int userId,
             @RequestParam("file") MultipartFile file
@@ -60,6 +81,7 @@ public class FileUploadController {
     }
 
     @GetMapping("/profile/{userId}")
+    @CrossOrigin
     public ResponseEntity<?> getUserProfile(@PathVariable int userId) {
         User user = userSevice.getUserById(userId);
         if (user == null) {
@@ -72,4 +94,24 @@ public class FileUploadController {
         }
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping("/uploadpro/{proId}")
+    @CrossOrigin
+    public ResponseEntity<Product> uploadProductImage(
+            @PathVariable int proId,
+            @RequestParam("file") MultipartFile file
+    ) {
+        Product product = productService.getProductById(proId);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            Product updatedProduct = productService.uploadProductImage(product, file);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 }

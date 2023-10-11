@@ -1,4 +1,4 @@
-package com.example.online_farm.DTO;
+package com.example.online_farm.DTO.Products;
 
 public class ProductsLimit {
     private String message;

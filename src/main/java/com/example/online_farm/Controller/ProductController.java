@@ -1,22 +1,30 @@
 package com.example.online_farm.Controller;
 
-import com.example.online_farm.DTO.ProductsLimit;
+import com.example.online_farm.DTO.ImageMessageDTO;
+import com.example.online_farm.DTO.Products.DataProductDetailDto;
+import com.example.online_farm.DTO.Products.Message;
+import com.example.online_farm.DTO.Products.ProductDTO;
+import com.example.online_farm.DTO.Products.ProductsLimit;
+import com.example.online_farm.Entity.Images;
 import com.example.online_farm.Entity.Product;
 import com.example.online_farm.Service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/api")
 public class ProductController {
-    private final ProductService productService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/products")
     @CrossOrigin
@@ -28,14 +36,42 @@ public class ProductController {
 //     lấy sản phẩm theo id
     @GetMapping("/products/{id}")
     @CrossOrigin
-    public ResponseEntity<Product> getProductById(@PathVariable int id) {
-        Product product = this.productService.getProductById(id);
+    public ResponseEntity<Message> getProductById(@PathVariable int id) {
+        Product product = productService.getProductById(id);
         if (product != null) {
-            return ResponseEntity.ok(product);
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.set_id(String.valueOf(product.getId()));
+            productDTO.setPrice(product.getPrice());
+            productDTO.setRating(product.getRating());
+            productDTO.setPrice_before_discount(product.getPriceBeforeDiscount());
+            productDTO.setQuantity(product.getQuantity());
+            productDTO.setSold(product.getSold());
+            productDTO.setView(product.getView());
+            productDTO.setName(product.getTitle());
+            productDTO.setDescription(product.getDescription());
+            productDTO.setCategory(String.valueOf(product.getCategoryId()));
+            productDTO.setImage(product.getImage());
+            productDTO.setCreatedAt(product.getCreatedAt());
+            productDTO.setUpdatedAt(product.getUpdatedAt());
+            productDTO.setImages(product.getImages().stream()
+                    .map(Images::getImageUrl)
+                    .collect(Collectors.toList()));
+            DataProductDetailDto data = new DataProductDetailDto();
+            List<ProductDTO> products = new ArrayList<>();
+            products.add(productDTO);
+            data.setProducts(products);
+
+            Message response = new Message();
+            response.setMessage("Lấy sản phẩm thành công");
+            response.setData(data);
+
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 
 //    @GetMapping("/products/{id}")
 //    public Product getProductById(@PathVariable int id) {

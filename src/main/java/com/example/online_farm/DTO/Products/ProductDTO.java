@@ -1,12 +1,11 @@
-package com.example.online_farm.DTO;
+package com.example.online_farm.DTO.Products;
 
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
 
 public class ProductDTO {
-    private int _id;
+    private String _id;
     private List<String> images;
     private int price;
     private double rating;
@@ -16,7 +15,7 @@ public class ProductDTO {
     private int view;
     private String name;
     private String description;
-    private int category;
+    private String category;
     private String image;
     private Date createdAt;
     private Date updatedAt;
@@ -24,12 +23,20 @@ public class ProductDTO {
     // Getter và Setter cho các thuộc tính
 
 
-    public int get_id() {
+    public String getCategory() {
+        return category;
+    }
+
+    public String get_id() {
         return _id;
     }
 
-    public void set_id(int _id) {
+    public void set_id(String _id) {
         this._id = _id;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public List<String> getImages() {
@@ -102,14 +109,6 @@ public class ProductDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getCategory() {
-        return category;
-    }
-
-    public void setCategory(int category) {
-        this.category = category;
     }
 
     public String getImage() {

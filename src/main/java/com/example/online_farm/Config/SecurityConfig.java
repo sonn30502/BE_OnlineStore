@@ -57,7 +57,7 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/login","/api/register","/api/refreshToken",
-                        "/api/products","/api/categories").permitAll()
+                        "/api/products","/api/categories","/api/products/{id}").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/api/**")
                 .authenticated().and()

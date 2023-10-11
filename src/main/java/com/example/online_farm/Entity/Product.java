@@ -12,33 +12,23 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
     private int id;
-    @Column(name="price")
     private int price;
     @Column(name="price_before_discount")
     private  int priceBeforeDiscount;
-    @Column(name="quantity")
     private int quantity;
-    @Column(name="rating")
     private double rating;
-    @Column(name="sold")
     private int sold;
-    @Column(name="view")
     private int view;
-    @Column(name="title")
     private String title;
-    @Column(name="description")
     private String description;
     @Column(name="category_id")
     private int categoryId;
-    @Column(name="image")
     private String image;
     @Column(name="created_at")
     private Date createdAt;
     @Column(name="updated_at")
     private Date updatedAt;
-    @Column(name="discount")
     private int discount;
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

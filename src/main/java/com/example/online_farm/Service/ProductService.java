@@ -13,6 +13,7 @@ import com.example.online_farm.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,11 +67,13 @@ public class ProductService {
         productDTO.setImages(product.getImages().stream()
                 .map(Images::getImageUrl)
                 .collect(Collectors.toList()));
+
+
         return productDTO;
     }
     public ProductsLimit getAllProducts(int page, int limit) {
-        PageRequest pageRequest = PageRequest.of(page - 1, limit);
-        Page<Product> productPage = productRepository.findAll(pageRequest);
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        Page<Product> productPage = productRepository.findAll(pageable);
 
         List<ProductDTO> productDTOs = productPage.getContent().stream()
                 .map(this::convertToProduct)
@@ -91,68 +94,6 @@ public class ProductService {
 
         return apiResponse;
     }
-//    public ProductsLimit getAllProducts(int page, int limit) {
-//        PageRequest pageRequest = PageRequest.of(page -1 , limit); // Trang đầu tiên có page = 1
-//        Page<Product> productPage = productRepository.findAll(pageRequest);
-//
-////        List<Product> products = productRepository.findAll();
-//        List<Product> products = productPage.getContent();
-//        List<ProductDTO> productDTOs = new ArrayList<>();
-//        for (Product product : products) {
-//            ProductDTO productDTO = new ProductDTO();
-//            productDTO.set_id(product.getId());
-//            productDTO.setPrice(product.getPrice());
-//            productDTO.setRating(product.getRating());
-//            productDTO.setPrice_before_discount(product.getPriceBeforeDiscount());
-//            productDTO.setQuantity(product.getQuantity());
-//            productDTO.setSold(product.getSold());
-//            productDTO.setView(product.getView());
-//            productDTO.setName(product.getTitle());
-//            productDTO.setDescription(product.getDescription());
-//            productDTO.setCategory(product.getCategoryId());
-//            productDTO.setImage(product.getImage());
-////            try {
-////                MultipartFile imageFile = productDTO.getImageFile();
-////                if (imageFile != null && !imageFile.isEmpty()) {
-////                    String imagePath = saveImage(imageFile);
-////                    product.setImage(imagePath);
-////                }
-////            } catch (IOException e) {
-////                // Xử lý lỗi nếu có lỗi khi đọc dữ liệu hình ảnh
-////                e.printStackTrace();
-////            }
-//            productDTO.setCreatedAt(product.getCreatedAt());
-//            productDTO.setUpdatedAt(product.getUpdatedAt());
-//
-//            // Xử lý danh sách hình ảnh
-//            List<String> imageUrls = new ArrayList<>();
-//            for (Images image : product.getImages()) {
-//                imageUrls.add(image.getImageUrl());
-//            }
-//            productDTO.setImages(imageUrls);
-//
-//            productDTOs.add(productDTO);
-//        }
-//
-//        // Tạo đối tượng pagination
-//        Pagination pagination = new Pagination();
-//        pagination.setPage(page);
-//        pagination.setLimit(limit);
-//        pagination.setPage_size(productPage.getTotalPages());
-//
-//        // Tạo đối tượng data
-//        DataProductLimit data = new DataProductLimit();
-//        data.setProducts(productDTOs);
-//        data.setPagination(pagination);
-//
-//        // Tạo đối tượng ApiResponse và đặt message
-//        ProductsLimit apiResponse = new ProductsLimit();
-//        apiResponse.setMessage("Lấy các sản phẩm thành công");
-//        apiResponse.setData(data);
-//
-//        return apiResponse;
-//    }
-
 
     public Product uploadProductImage(Product product, MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
@@ -163,4 +104,29 @@ public class ProductService {
         }
         return product;
     }
+
+    public ProductsLimit searchProductByTitle(String name,int page, int limit) {
+        Pageable pageable = PageRequest.of(page - 1, limit); // Lưu ý: Trừ đi 1 từ page để đáp ứng với trang 0-indexed
+        Page<Product> productPage = productRepository.findByTitleContaining(name, pageable);
+
+        List<ProductDTO> productDTOs = productPage.getContent().stream()
+                .map(this::convertToProduct)
+                .collect(Collectors.toList());
+
+        Pagination pagination = new Pagination();
+        pagination.setPage(page);
+        pagination.setLimit(limit);
+        pagination.setPage_size(productPage.getTotalPages());
+
+        DataProductLimit data = new DataProductLimit();
+        data.setProducts(productDTOs);
+        data.setPagination(pagination);
+
+        ProductsLimit apiResponse = new ProductsLimit();
+        apiResponse.setMessage("Lấy các sản phẩm thành công");
+        apiResponse.setData(data);
+
+        return apiResponse;
+    }
+
 }

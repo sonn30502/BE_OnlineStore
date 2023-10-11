@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -20,13 +21,6 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
-    @GetMapping("/products")
-    @CrossOrigin
-    public ProductsLimit getProducts(@RequestParam(defaultValue = "1") int page,
-                                     @RequestParam(defaultValue = "30") int limit) {
-        return productService.getAllProducts(page, limit);
-    }
 
 //     lấy sản phẩm theo id
     @GetMapping("/products/{id}")
@@ -89,4 +83,16 @@ public class ProductController {
         }
     }
 
+    // tìm kiếm theo tên,
+    @GetMapping("/products")
+    @CrossOrigin
+    public ProductsLimit searchProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "15") int limit) {
+        if (name == null || name.isEmpty()) {
+            return productService.getAllProducts(page, limit);
+        }
+        return productService.searchProductByTitle(name, page, limit);
+    }
 }

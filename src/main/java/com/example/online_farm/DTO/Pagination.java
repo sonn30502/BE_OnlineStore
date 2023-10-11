@@ -5,6 +5,15 @@ public class Pagination {
     private int limit;
     private int page_size;
 
+    public Pagination() {
+    }
+
+    public Pagination(int page, int limit, int page_size) {
+        this.page = page;
+        this.limit = limit;
+        this.page_size = page_size;
+    }
+
     public int getPage() {
         return page;
     }

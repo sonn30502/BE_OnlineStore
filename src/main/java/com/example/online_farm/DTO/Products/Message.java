@@ -2,9 +2,9 @@ package com.example.online_farm.DTO.Products;
 
 public class Message {
     private String message;
-    private DataProductDetailDto data;
+    private ProductDTO data;
 
-    public Message(String message, DataProductDetailDto data) {
+    public Message(String message, ProductDTO data) {
         this.message = message;
         this.data = data;
     }
@@ -24,11 +24,11 @@ public class Message {
         this.message = message;
     }
 
-    public DataProductDetailDto getData() {
+    public ProductDTO getData() {
         return data;
     }
 
-    public void setData(DataProductDetailDto data) {
+    public void setData(ProductDTO data) {
         this.data = data;
     }
 }

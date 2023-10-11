@@ -1,7 +1,5 @@
 package com.example.online_farm.Controller;
 
-import com.example.online_farm.DTO.ImageMessageDTO;
-import com.example.online_farm.DTO.Products.DataProductDetailDto;
 import com.example.online_farm.DTO.Products.Message;
 import com.example.online_farm.DTO.Products.ProductDTO;
 import com.example.online_farm.DTO.Products.ProductsLimit;
@@ -13,9 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -56,14 +51,13 @@ public class ProductController {
             productDTO.setImages(product.getImages().stream()
                     .map(Images::getImageUrl)
                     .collect(Collectors.toList()));
-            DataProductDetailDto data = new DataProductDetailDto();
-            List<ProductDTO> products = new ArrayList<>();
-            products.add(productDTO);
-            data.setProducts(products);
+//            List<ProductDTO> products = new ArrayList<>();
+//            products.add(productDTO);
+//            data.setProducts(products);
 
             Message response = new Message();
             response.setMessage("Lấy sản phẩm thành công");
-            response.setData(data);
+            response.setData(productDTO);
 
             return ResponseEntity.ok(response);
         } else {

@@ -2,7 +2,6 @@ package com.example.online_farm.Controller;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.example.online_farm.DTO.ImageDTO;
 import com.example.online_farm.DTO.ImageMessageDTO;
 import com.example.online_farm.Entity.Images;
 import com.example.online_farm.Entity.Product;

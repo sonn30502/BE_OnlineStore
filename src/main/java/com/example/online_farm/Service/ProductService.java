@@ -113,7 +113,7 @@ public class ProductService {
     // tìm kiếm
     public ProductsLimit getProductsByField(String fieldName, String value, int page, int limit) {
         // Kiểm tra xem fieldName có phải là "categoryId"
-        if ("categoryId".equals(fieldName)) {
+        if ("category".equals(fieldName)) {
             // Kiểm tra xem categoryId tồn tại trong cơ sở dữ liệu
             int categoryId = Integer.parseInt(value);
             if (!categoryExists(categoryId)) {
@@ -128,7 +128,7 @@ public class ProductService {
             case "name":
                 productPage = productRepository.findByTitleContaining(value, pageable);
                 break;
-            case "categoryId":
+            case "category":
                 productPage = productRepository.findByCategoryId(Integer.parseInt(value), pageable);
                 break;
             // Các trường khác nếu cần

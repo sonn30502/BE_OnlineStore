@@ -76,39 +76,18 @@ public class ProductController {
         }
     }
 
-//    @GetMapping("/products")
-//    @CrossOrigin
-//    public ProductsLimit searchProducts(
-//            @RequestParam(required = false) String name,
-//            @RequestParam(required = false) Integer categoryId, // Thêm tham số categoryId
-//            @RequestParam(defaultValue = "1") int page,
-//            @RequestParam(defaultValue = "15") int limit) {
-//        if (name != null) {
-//            return productService.getProductsByField("name", name, page, limit);
-//        } else if (categoryId != null) {
-//            try {
-//                return productService.getProductsByField("categoryId", String.valueOf(categoryId), page, limit);
-//            }catch (IllegalArgumentException e){
-//                return handleCategoryNotFoundError(e.getMessage());
-//            }
-//
-//        } else {
-//            // Trường hợp không có tham số title và categoryId, lấy tất cả sản phẩm
-//            return productService.getAllProducts(page, limit);
-//        }
-//    }
     @GetMapping("/products")
     @CrossOrigin
     public ProductsLimit searchProducts(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) Integer category,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "15") int limit) {
         if (name != null) {
             return productService.getProductsByField("name", name, page, limit);
-        } else if (categoryId != null) {
+        } else if (category != null) {
             try {
-                return productService.getProductsByField("categoryId", String.valueOf(categoryId), page, limit);
+                return productService.getProductsByField("category", String.valueOf(category), page, limit);
             } catch (IllegalArgumentException e) {
                 // Xử lý lỗi khi categoryId không tồn tại
                 return handleNotFoundError(e.getMessage());
@@ -118,8 +97,6 @@ public class ProductController {
             return productService.getAllProducts(page, limit);
         }
     }
-
-
 
     private ProductsLimit handleNotFoundError(String errorMessage) {
         ProductsLimit apiResponse = new ProductsLimit();

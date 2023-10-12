@@ -59,13 +59,6 @@ public class ProductController {
         }
     }
 
-
-
-//    @GetMapping("/products/{id}")
-//    public Product getProductById(@PathVariable int id) {
-//        return productService.getProductById(id);
-//    }
-
     // xóa sản phẩm theo id
     @DeleteMapping("/delete/product/{id}")
     @CrossOrigin
@@ -83,16 +76,55 @@ public class ProductController {
         }
     }
 
-    // tìm kiếm theo tên,
+//    @GetMapping("/products")
+//    @CrossOrigin
+//    public ProductsLimit searchProducts(
+//            @RequestParam(required = false) String name,
+//            @RequestParam(required = false) Integer categoryId, // Thêm tham số categoryId
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "15") int limit) {
+//        if (name != null) {
+//            return productService.getProductsByField("name", name, page, limit);
+//        } else if (categoryId != null) {
+//            try {
+//                return productService.getProductsByField("categoryId", String.valueOf(categoryId), page, limit);
+//            }catch (IllegalArgumentException e){
+//                return handleCategoryNotFoundError(e.getMessage());
+//            }
+//
+//        } else {
+//            // Trường hợp không có tham số title và categoryId, lấy tất cả sản phẩm
+//            return productService.getAllProducts(page, limit);
+//        }
+//    }
     @GetMapping("/products")
     @CrossOrigin
     public ProductsLimit searchProducts(
             @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer categoryId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "15") int limit) {
-        if (name == null || name.isEmpty()) {
+        if (name != null) {
+            return productService.getProductsByField("name", name, page, limit);
+        } else if (categoryId != null) {
+            try {
+                return productService.getProductsByField("categoryId", String.valueOf(categoryId), page, limit);
+            } catch (IllegalArgumentException e) {
+                // Xử lý lỗi khi categoryId không tồn tại
+                return handleNotFoundError(e.getMessage());
+            }
+        } else {
+            // Trường hợp không có tham số title và categoryId, lấy tất cả sản phẩm
             return productService.getAllProducts(page, limit);
         }
-        return productService.searchProductByTitle(name, page, limit);
+    }
+
+
+
+    private ProductsLimit handleNotFoundError(String errorMessage) {
+        ProductsLimit apiResponse = new ProductsLimit();
+        apiResponse.setMessage("Lỗi: " + errorMessage);
+        // Thêm thông báo lỗi phù hợp vào response
+        return apiResponse;
     }
 }

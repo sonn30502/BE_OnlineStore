@@ -12,5 +12,8 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findAll();
     Page<Product> findByTitleContaining(String name, Pageable pageable);
+    Page<Product> findByCategoryId(int categoryId, Pageable pageable);
+
+    boolean existsByCategoryId(int categoryId);
 
 }

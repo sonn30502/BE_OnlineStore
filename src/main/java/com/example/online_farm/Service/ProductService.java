@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +43,16 @@ public class ProductService {
     }
     public void deleteById(int id){
         productRepository.deleteById(id);
+    }
+
+    public Product uploadProductImage(Product product, MultipartFile file) throws IOException {
+        if (!file.isEmpty()) {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            String imageUrl = uploadResult.get("secure_url").toString();
+            product.setImage(imageUrl);
+            return productRepository.save(product);
+        }
+        return product;
     }
 
     public Product getProductById(int id){
@@ -95,19 +106,36 @@ public class ProductService {
         return apiResponse;
     }
 
-    public Product uploadProductImage(Product product, MultipartFile file) throws IOException {
-        if (!file.isEmpty()) {
-            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            String imageUrl = uploadResult.get("secure_url").toString();
-            product.setImage(imageUrl);
-            return productRepository.save(product);
-        }
-        return product;
+    public boolean categoryExists(int categoryId) {
+        return productRepository.existsByCategoryId(categoryId);
     }
 
-    public ProductsLimit searchProductByTitle(String name,int page, int limit) {
-        Pageable pageable = PageRequest.of(page - 1, limit); // Lưu ý: Trừ đi 1 từ page để đáp ứng với trang 0-indexed
-        Page<Product> productPage = productRepository.findByTitleContaining(name, pageable);
+    // tìm kiếm
+    public ProductsLimit getProductsByField(String fieldName, String value, int page, int limit) {
+        // Kiểm tra xem fieldName có phải là "categoryId"
+        if ("categoryId".equals(fieldName)) {
+            // Kiểm tra xem categoryId tồn tại trong cơ sở dữ liệu
+            int categoryId = Integer.parseInt(value);
+            if (!categoryExists(categoryId)) {
+                throw new IllegalArgumentException("Category không tồn tại: " + categoryId);
+            }
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        Page<Product> productPage;
+
+        switch (fieldName) {
+            case "name":
+                productPage = productRepository.findByTitleContaining(value, pageable);
+                break;
+            case "categoryId":
+                productPage = productRepository.findByCategoryId(Integer.parseInt(value), pageable);
+                break;
+            // Các trường khác nếu cần
+            default:
+                // Xử lý mặc định hoặc báo lỗi nếu cần
+                throw new IllegalArgumentException("Trường không hợp lệ: " + fieldName);
+        }
 
         List<ProductDTO> productDTOs = productPage.getContent().stream()
                 .map(this::convertToProduct)
@@ -123,10 +151,11 @@ public class ProductService {
         data.setPagination(pagination);
 
         ProductsLimit apiResponse = new ProductsLimit();
-        apiResponse.setMessage("Lấy các sản phẩm thành công");
+        apiResponse.setMessage("Lấy sản phẩm thành công");
         apiResponse.setData(data);
 
         return apiResponse;
     }
+
 
 }

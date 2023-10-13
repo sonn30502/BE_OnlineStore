@@ -31,28 +31,6 @@ public class PurchaseController {
     @Autowired
     private ProductService productService;
 
-//    @PostMapping("purchases/add-to-cart")
-//    public ResponseEntity<PurchaseResponse> addToCart(@RequestBody PurchaseRequest request) {
-//        // Lấy thông tin người dùng hiện tại (cần thêm phần xác thực người dùng)
-//        User currentUser = userSevice.getCurrentUser();
-//
-//        // Lấy thông tin sản phẩm dựa trên request.getProduct_id()
-//        Product product = productService.getProductById(Integer.parseInt(request.getProduct_id()));
-//
-//        // Thêm sản phẩm vào giỏ hàng và lấy thông tin đơn hàng
-//        Purchase purchase = purchaseService.addToCart(currentUser, product, request.getBuy_count());
-//
-//        // Tạo đối tượng PurchaseDataDto cho phản hồi
-//        PurchaseDataDto data = purchaseService.convertToPurchase(purchase);
-//
-//        // Tạo phản hồi
-//        PurchaseResponse response = new PurchaseResponse();
-//        response.setMessage("Thêm sản phẩm vào giỏ hàng thành công");
-//        response.setData(data);
-//
-//        return new ResponseEntity<>(response, HttpStatus.CREATED);
-//    }
-
     @PostMapping("/purchases/add-to-cart")
     @CrossOrigin
     public ResponseEntity<PurchaseResponse> addToCart(@RequestBody PurchaseRequest addToCartRequest) {

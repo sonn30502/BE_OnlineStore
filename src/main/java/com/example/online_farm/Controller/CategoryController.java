@@ -22,6 +22,22 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(
+        origins = {
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://localhost:3000",
+                "http://localhost:3001",
+                "http://localhost:8080"
+        },
+        allowCredentials = "true",
+        maxAge = 3600,
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST,
+                RequestMethod.DELETE, RequestMethod.PUT,
+                RequestMethod.PATCH, RequestMethod.OPTIONS,
+                RequestMethod.HEAD, RequestMethod.TRACE}
+)
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

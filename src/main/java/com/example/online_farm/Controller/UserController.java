@@ -33,22 +33,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(
-        origins = {
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "http://localhost:3000",
-                "http://localhost:3001",
-                "http://localhost:8080"
-        },
-        allowCredentials = "true",
-        maxAge = 3600,
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST,
-                RequestMethod.DELETE, RequestMethod.PUT,
-                RequestMethod.PATCH, RequestMethod.OPTIONS,
-                RequestMethod.HEAD, RequestMethod.TRACE}
-)
 public class UserController {
     @Autowired
     private UserRepository userRepository;
@@ -70,7 +54,6 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    @CrossOrigin
     public ResponseEntity<AuthRegister> addUser(@RequestBody @Valid AuthRequest user) {
         try {
             // Kiểm tra xem email đã tồn tại trong hệ thống chưa
@@ -122,7 +105,6 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @CrossOrigin
     public ResponseEntity<UserAllMessiage> getAllUsers() {
         List<User> users = userRepository.findAll();
         // Chuyển đổi từ User sang UserDTO và loại bỏ trường password
@@ -153,7 +135,6 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    @CrossOrigin
     public ResponseEntity<User> updateUser(@PathVariable int id, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         User existingUser = userRepository.findById(id).orElse(null);
 
@@ -200,7 +181,6 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
     @PostMapping("/login")
-    @CrossOrigin
     public ResponseEntity<AuthResponse> authenticateAndGetToken(@RequestBody @Valid AuthRequest authRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
@@ -257,7 +237,6 @@ public class UserController {
         return refreshTokenOptional.isPresent();
     }
     @PostMapping("/logout")
-    @CrossOrigin
     public ResponseEntity<String> logout(@RequestBody RefreshTokenRequest logoutRequest) {
         String refreshToken = logoutRequest.getRefreshToken();
 
@@ -273,7 +252,6 @@ public class UserController {
     }
 
     @GetMapping("/refreshToken/findByToken")
-    @CrossOrigin
     public ResponseEntity<RefreshToken> findByToken(@RequestParam String token) {
         Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(token);
 
@@ -290,7 +268,6 @@ public class UserController {
     }
 
     @PostMapping("/refreshToken")
-    @CrossOrigin
     public JwtResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         return refreshTokenService.findByToken(refreshTokenRequest.getRefreshToken())
                 .map(refreshTokenService::verifyExpiration)

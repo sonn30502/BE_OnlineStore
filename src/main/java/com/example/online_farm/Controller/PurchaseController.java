@@ -23,22 +23,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(
-        origins = {
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "http://localhost:3000",
-                "http://localhost:3001",
-                "http://localhost:8080"
-        },
-        allowCredentials = "true",
-        maxAge = 3600,
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST,
-                RequestMethod.DELETE, RequestMethod.PUT,
-                RequestMethod.PATCH, RequestMethod.OPTIONS,
-                RequestMethod.HEAD, RequestMethod.TRACE}
-)
 public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
@@ -70,7 +54,6 @@ public class PurchaseController {
 //    }
 
     @PostMapping("/purchases/add-to-cart")
-    @CrossOrigin
     public ResponseEntity<PurchaseResponse> addToCart(@RequestBody PurchaseRequest addToCartRequest) {
         PurchaseDataDto data = null;
         try {
@@ -102,7 +85,6 @@ public class PurchaseController {
     }
 
     @GetMapping("/purchases")
-    @CrossOrigin
     public ResponseEntity<List<PurchaseDataDto>> getPurchases(@RequestParam("status") int status) {
         PurchaseStatus purchaseStatus = PurchaseStatus.fromCode(status);
         if (purchaseStatus == null) {

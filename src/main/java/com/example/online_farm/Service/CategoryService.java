@@ -37,6 +37,8 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
+
+
     public Page<Category> getAllForCategoryPageable(int page, int size) {
         return categoryRepository.findAll(PageRequest.of(page, size));
     }

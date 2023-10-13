@@ -1,5 +1,6 @@
 package com.example.online_farm.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +46,9 @@ public class User {
     )
     private List<Role> roles = new ArrayList<>();
 
-
+    @Transient
+    @JsonIgnore
+    private List<Purchase> listDonHang;
     public User() {
     }
 

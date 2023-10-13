@@ -82,12 +82,13 @@ public class ProductController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer category,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "15") int limit) {
+            @RequestParam(defaultValue = "15") int limit,
+            @RequestParam(defaultValue = "createdAt") String sort_by) {
         if (name != null) {
-            return productService.getProductsByField("name", name, page, limit);
+            return productService.getProductsByField("name", name, page, limit, sort_by);
         } else if (category != null) {
             try {
-                return productService.getProductsByField("category", String.valueOf(category), page, limit);
+                return productService.getProductsByField("category", String.valueOf(category), page, limit, sort_by);
             } catch (IllegalArgumentException e) {
                 // Xử lý lỗi khi categoryId không tồn tại
                 return handleNotFoundError(e.getMessage());
@@ -97,6 +98,8 @@ public class ProductController {
             return productService.getAllProducts(page, limit);
         }
     }
+
+
 
     private ProductsLimit handleNotFoundError(String errorMessage) {
         ProductsLimit apiResponse = new ProductsLimit();

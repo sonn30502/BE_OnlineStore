@@ -60,7 +60,7 @@ public class ProductService {
     }
 
 
-    private ProductDTO convertToProduct(Product product) {
+    public ProductDTO convertToProduct(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.set_id(String.valueOf(product.getId()));
         productDTO.setPrice(product.getPrice());
@@ -111,7 +111,7 @@ public class ProductService {
     }
 
     // tìm kiếm
-    public ProductsLimit getProductsByField(String fieldName, String value, int page, int limit) {
+    public ProductsLimit getProductsByField(String fieldName, String value, int page, int limit, String sort_by) {
         // Kiểm tra xem fieldName có phải là "categoryId"
         if ("category".equals(fieldName)) {
             // Kiểm tra xem categoryId tồn tại trong cơ sở dữ liệu
@@ -121,7 +121,18 @@ public class ProductService {
             }
         }
 
-        Pageable pageable = PageRequest.of(page - 1, limit);
+        Sort sort = Sort.by(Sort.Order.asc("createdAt")); // Default sorting by 'createdAt'
+
+        // You can add logic to determine the sorting field based on the 'sortBy' parameter.
+        if ("view".equals(sort_by)) {
+            sort = Sort.by(Sort.Order.desc("view"));
+        } else if ("sold".equals(sort_by)) {
+            sort = Sort.by(Sort.Order.desc("sold"));
+        } else if ("price".equals(sort_by)) {
+            sort = Sort.by(Sort.Order.asc("price"));
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
         Page<Product> productPage;
 
         switch (fieldName) {
@@ -156,6 +167,7 @@ public class ProductService {
 
         return apiResponse;
     }
+
 
 
 }

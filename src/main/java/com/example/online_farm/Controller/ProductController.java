@@ -95,11 +95,11 @@ public class ProductController {
             }
         } else {
             // Trường hợp không có tham số title và categoryId, lấy tất cả sản phẩm
-            return productService.getAllProducts(page, limit);
+//            return productService.getAllProducts(page, limit);
+            return productService.getProductsByField("createdAt", "", page, limit, sort_by);
         }
+
     }
-
-
 
     private ProductsLimit handleNotFoundError(String errorMessage) {
         ProductsLimit apiResponse = new ProductsLimit();

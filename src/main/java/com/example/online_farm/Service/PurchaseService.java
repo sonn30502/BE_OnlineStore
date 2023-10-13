@@ -8,6 +8,7 @@ import com.example.online_farm.Repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -17,6 +18,8 @@ public class PurchaseService {
     private ProductService productService;
     @Autowired
     private PurchaseRepository purchaseRepository;
+    @Autowired
+    private UserSevice userSevice;
 
 //    public PurchaseDataDto convertToPurchase(Purchase purchase) {
 //        PurchaseDataDto purchaseDataDto = new PurchaseDataDto();
@@ -72,7 +75,27 @@ public class PurchaseService {
             return purchaseRepository.save(newPurchase);
         }
     }
+    public List<Purchase> getPurchasesByStatus(int status) {
+        return purchaseRepository.findByStatus(status);
+    }
+    public PurchaseDataDto convertToPurchase(Purchase purchase) {
 
+        PurchaseDataDto purchaseDataDto = new PurchaseDataDto();
+        User user = userSevice.getCurrentUser(); // Đảm bảo rằng bạn có một phương thức để lấy người dùng hiện tại từ xác thực.
+        purchaseDataDto.setBuy_count(purchase.getBuyCount());
+        purchaseDataDto.setPrice(purchase.getPrice());
+        purchaseDataDto.setPrice_before_discount(purchase.getPriceBeforeDiscount());
+        purchaseDataDto.setStatus(purchase.getStatus());
+        purchaseDataDto.set_id(String.valueOf(purchase.getId()));
+        purchaseDataDto.setCreatedAt(purchase.getCreatedAt());
+        purchaseDataDto.setUpdatedAt(purchase.getUpdatedAt());
+        purchaseDataDto.setUser(String.valueOf(user.getId()));
 
+        // Chuyển đổi thông tin về sản phẩm
+        ProductDTO productDTO = productService.convertToProduct(purchase.getProduct());
+        purchaseDataDto.setProduct(productDTO);
+
+        return purchaseDataDto;
+    }
 
 }

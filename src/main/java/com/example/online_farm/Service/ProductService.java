@@ -112,6 +112,7 @@ public class ProductService {
 
     // tìm kiếm
     public ProductsLimit getProductsByField(String fieldName, String value, int page, int limit, String sort_by) {
+        Pageable pageable;
         // Kiểm tra xem fieldName có phải là "categoryId"
         if ("category".equals(fieldName)) {
             // Kiểm tra xem categoryId tồn tại trong cơ sở dữ liệu
@@ -119,33 +120,36 @@ public class ProductService {
             if (!categoryExists(categoryId)) {
                 throw new IllegalArgumentException("Category không tồn tại: " + categoryId);
             }
+            pageable = PageRequest.of(page - 1, limit);
+        }else if("name".equals(fieldName)){
+            // Kiểm tra và thực hiện tìm kiếm theo name
+            pageable = PageRequest.of(page - 1, limit);
+        }else {
+            // Không tìm kiếm theo category hoặc name, sử dụng giá trị sort_by để xác định thứ tự sắp xếp
+            switch (sort_by) {
+                case "view":
+                    pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Order.desc("view")));
+                    break;
+                case "sold":
+                    pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Order.desc("sold")));
+                    break;
+                case "price":
+                    pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Order.asc("price")));
+                    break;
+                default:
+                    // Mặc định sắp xếp theo 'createdAt'
+                    pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Order.desc("createdAt")));
+            }
         }
-
-        Sort sort = Sort.by(Sort.Order.asc("createdAt")); // Default sorting by 'createdAt'
-
-        // You can add logic to determine the sorting field based on the 'sortBy' parameter.
-        if ("view".equals(sort_by)) {
-            sort = Sort.by(Sort.Order.desc("view"));
-        } else if ("sold".equals(sort_by)) {
-            sort = Sort.by(Sort.Order.desc("sold"));
-        } else if ("price".equals(sort_by)) {
-            sort = Sort.by(Sort.Order.asc("price"));
-        }
-
-        Pageable pageable = PageRequest.of(page - 1, limit, sort);
         Page<Product> productPage;
-
-        switch (fieldName) {
-            case "name":
-                productPage = productRepository.findByTitleContaining(value, pageable);
-                break;
-            case "category":
-                productPage = productRepository.findByCategoryId(Integer.parseInt(value), pageable);
-                break;
-            // Các trường khác nếu cần
-            default:
-                // Xử lý mặc định hoặc báo lỗi nếu cần
-                throw new IllegalArgumentException("Trường không hợp lệ: " + fieldName);
+        // Thực hiện tìm kiếm dựa trên fieldName (category hoặc name) hoặc sắp xếp dựa trên sort_by
+        if ("name".equals(fieldName)) {
+            productPage = productRepository.findByTitleContaining(value, pageable);
+        } else if ("category".equals(fieldName)) {
+            productPage = productRepository.findByCategoryId(Integer.parseInt(value), pageable);
+        } else {
+            // Thực hiện truy vấn theo trường sort_by
+            productPage = productRepository.findAll(pageable);
         }
 
         List<ProductDTO> productDTOs = productPage.getContent().stream()
@@ -167,7 +171,5 @@ public class ProductService {
 
         return apiResponse;
     }
-
-
 
 }

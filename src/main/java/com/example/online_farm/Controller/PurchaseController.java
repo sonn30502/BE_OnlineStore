@@ -1,9 +1,9 @@
 package com.example.online_farm.Controller;
 
-import com.cloudinary.api.ApiResponse;
 import com.example.online_farm.DTO.Cart.PurchaseDataDto;
 import com.example.online_farm.DTO.Cart.PurchaseRequest;
 import com.example.online_farm.DTO.Cart.PurchaseResponse;
+import com.example.online_farm.DTO.Cart.PurchaseStatus;
 import com.example.online_farm.DTO.Products.ProductDTO;
 import com.example.online_farm.Entity.Product;
 import com.example.online_farm.Entity.Purchase;
@@ -16,7 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -81,4 +84,26 @@ public class PurchaseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new PurchaseResponse("Lỗi: " + e.getMessage(), null));
         }
     }
+
+    @GetMapping("/purchases")
+    @CrossOrigin
+    public ResponseEntity<List<PurchaseDataDto>> getPurchases(@RequestParam("status") int status) {
+        PurchaseStatus purchaseStatus = PurchaseStatus.fromCode(status);
+        if (purchaseStatus == null) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
+
+        List<Purchase> purchases = purchaseService.getPurchasesByStatus(purchaseStatus.getCode());
+
+        if (purchases.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        List<PurchaseDataDto> purchaseDataList = purchases.stream()
+                .map(purchase -> purchaseService.convertToPurchase(purchase))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(purchaseDataList);
+    }
+
 }

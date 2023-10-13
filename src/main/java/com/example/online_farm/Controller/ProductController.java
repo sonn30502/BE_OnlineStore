@@ -24,6 +24,7 @@ public class ProductController {
 
 //     lấy sản phẩm theo id
     @GetMapping("/products/{id}")
+    @CrossOrigin
     public ResponseEntity<Message> getProductById(@PathVariable int id) {
         Product product = productService.getProductById(id);
         if (product != null) {
@@ -60,6 +61,7 @@ public class ProductController {
 
     // xóa sản phẩm theo id
     @DeleteMapping("/delete/product/{id}")
+    @CrossOrigin
     public ResponseEntity<String> deleteProduct(@PathVariable int id) {
         // Kiểm tra xem sản phẩm có liên quan đến hình ảnh không
         boolean hasImages = productService.hasImages(id);
@@ -75,6 +77,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
+    @CrossOrigin
     public ProductsLimit searchProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer category,

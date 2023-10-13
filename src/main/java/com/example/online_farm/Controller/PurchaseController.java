@@ -54,6 +54,7 @@ public class PurchaseController {
 //    }
 
     @PostMapping("/purchases/add-to-cart")
+    @CrossOrigin
     public ResponseEntity<PurchaseResponse> addToCart(@RequestBody PurchaseRequest addToCartRequest) {
         PurchaseDataDto data = null;
         try {
@@ -85,6 +86,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/purchases")
+    @CrossOrigin
     public ResponseEntity<List<PurchaseDataDto>> getPurchases(@RequestParam("status") int status) {
         PurchaseStatus purchaseStatus = PurchaseStatus.fromCode(status);
         if (purchaseStatus == null) {

@@ -31,6 +31,7 @@ public class CategoryController {
         return "Welcome this endpoint is not secure";
     }
     @GetMapping("/categories")
+    @CrossOrigin
     public CategoryResponse getAll(){
         List<Category> categories = categoryService.getAll();
         List<CategoryDTO> categoryDTOs = categories.stream()
@@ -50,21 +51,25 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
+    @CrossOrigin
     public Page<Category> getAllCategory(@RequestParam(defaultValue = "1") int page) {
         return categoryService.getAllForCategoryPageable(page-1,6);
     }
 
     @GetMapping("/allForReal")
+    @CrossOrigin
     public List<Category> getRealAllCategory() {
         return categoryService.getAllCategory();
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin
     public Category getCategoryById(@PathVariable int id) {
         return categoryService.getCategoryById(id);
     }
 
     @PostMapping(value = "/add-category")
+    @CrossOrigin
     public ResponseEntity<ResponseObject> addCategory(@RequestBody @Valid CategoryDTO categoryDTO, BindingResult result) {
         ResponseObject ro = new ResponseObject();
 
@@ -91,6 +96,7 @@ public class CategoryController {
 
 
     @PutMapping(value = "/update")
+    @CrossOrigin
     public ResponseObject updateCategory(@RequestBody @Valid Category editCategory, BindingResult result, HttpServletRequest request) {
 
         ResponseObject ro = new ResponseObject();
@@ -111,6 +117,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete-category/{id}")
+    @CrossOrigin
     public String deleteCategory(@PathVariable int id, HttpServletRequest request) {
         categoryService.deleteById(id);
         request.getSession().setAttribute("listCategory", categoryService.getAllCategory());;

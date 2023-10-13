@@ -34,6 +34,7 @@ public class FileUploadController {
     private Cloudinary cloudinary;
 
     @PostMapping("/uploadsp/{productId}")
+    @CrossOrigin
     public ResponseEntity<Object> uploadFile(@PathVariable int productId, @RequestParam("file") MultipartFile file) {
         ImageMessageDTO responseDTO = new ImageMessageDTO();
         try {
@@ -61,6 +62,7 @@ public class FileUploadController {
 
 
     @PostMapping("/uploaduser/{userId}")
+    @CrossOrigin
     public ResponseEntity<User> uploadProfileImage(
             @PathVariable int userId,
             @RequestParam("file") MultipartFile file
@@ -78,6 +80,7 @@ public class FileUploadController {
     }
 
     @GetMapping("/profile/{userId}")
+    @CrossOrigin
     public ResponseEntity<?> getUserProfile(@PathVariable int userId) {
         User user = userSevice.getUserById(userId);
         if (user == null) {
@@ -92,6 +95,7 @@ public class FileUploadController {
     }
 
     @PostMapping("/uploadpro/{proId}")
+    @CrossOrigin
     public ResponseEntity<Product> uploadProductImage(
             @PathVariable int proId,
             @RequestParam("file") MultipartFile file
@@ -107,6 +111,5 @@ public class FileUploadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
 }

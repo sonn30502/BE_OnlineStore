@@ -16,6 +16,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findByCategoryId(int categoryId, Pageable pageable);
     boolean existsByCategoryId(int categoryId);
 
-
+   
 
 }

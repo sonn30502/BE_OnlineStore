@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class UserDataRegister {
     private List<String> roles;
-    private int _id;
+    private String _id;
     private String email;
     private Date createdAt;
     private Date updatedAt;
@@ -23,11 +23,11 @@ public class UserDataRegister {
         this.avatar = avatar;
     }
 
-    public int get_id() {
+    public String get_id() {
         return _id;
     }
 
-    public void set_id(int _id) {
+    public void set_id(String _id) {
         this._id = _id;
     }
 

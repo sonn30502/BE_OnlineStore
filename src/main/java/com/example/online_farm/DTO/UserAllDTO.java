@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class UserAllDTO {
-    private int Id;
+    private String _id;
     private List<String> roles;
     private String email;
     private String name;
@@ -16,12 +16,12 @@ public class UserAllDTO {
     private Date updateAt;
     private Date date_of_birth;
 
-    public int getId() {
-        return Id;
+    public String get_id() {
+        return _id;
     }
 
-    public void setId(int id) {
-        Id = id;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
 //    public List<String> getRoleList() {

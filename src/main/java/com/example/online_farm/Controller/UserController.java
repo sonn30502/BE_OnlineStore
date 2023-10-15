@@ -83,7 +83,7 @@ public class UserController {
             userDataRegister.setCreatedAt(newUser.getCreatedAt());
             userDataRegister.setUpdatedAt(newUser.getUpdatedAt());
             userDataRegister.setEmail(newUser.getEmail());
-            userDataRegister.set_id(newUser.getId());
+            userDataRegister.set_id(String.valueOf(newUser.getId()));
 
             List<String> roleNames = newUser.getRoles().stream()
                     .map(Role::getName)
@@ -113,7 +113,7 @@ public class UserController {
         List<UserAllDTO> userDTOs = users.stream()
                 .map(user -> {
                     UserAllDTO userDTO = new UserAllDTO();
-                    userDTO.setId(user.getId());
+                    userDTO.set_id(String.valueOf(user.getId()));
                     userDTO.setEmail(user.getEmail());
                     userDTO.setName(user.getFullName());
                     userDTO.setAddress(user.getAddress());
@@ -198,7 +198,7 @@ public class UserController {
                 userData.setAccess_token("Bearer " + token);
 
                 UserAllDTO userAllDTO = new UserAllDTO();
-                userAllDTO.setId(user.get().getId());
+                userAllDTO.set_id(String.valueOf(user.get().getId()));
                 userAllDTO.setRoles(user.get().getRoles().stream().map(Role::getName).collect(Collectors.toList()));
                 userAllDTO.setEmail(user.get().getEmail());
                 userAllDTO.setName(user.get().getFullName());
